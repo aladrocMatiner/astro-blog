@@ -66,6 +66,17 @@ services:
       - ./observability/loki/loki-config.yaml:/etc/loki/local-config.yaml:ro
       - loki-storage:/loki
       - loki-index:/loki/index
+
+  cadvisor:
+    image: google/cadvisor:latest
+    ports:
+      - '8082:8080'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
     user: root
 
   agent:

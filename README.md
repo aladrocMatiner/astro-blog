@@ -40,6 +40,8 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 - Grafana está disponible vía `https://grafana.aladroc-test.io` (HAProxy termina TLS) y sigue siendo accesible en `http://localhost:8080/grafana`.
 - Prometheus UI: `http://localhost:8080/prometheus`
 - Loki Explore: `http://localhost:8080/loki`
+- cAdvisor UI: `http://localhost:8080/metrics` (el tablero de Prometheus incluye datos gracias al job `cadvisor`).
+- Grafana incluye un dashboard preconfigurado (`astro-haproxy-overview`) que muestra CPU/memoria de Astro, sesiones/requests de HAProxy y los logs relevantes de ambos servicios.
 - Grafana Alloy agent lee los logs en `/var/lib/docker/containers/*/*.log` y los envía a Loki para alimentar los dashboards.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
 

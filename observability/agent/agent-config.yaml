@@ -13,3 +13,19 @@ logs:
           labels:
             job: docker
             __path__: /var/lib/docker/containers/*/*.log
+    - job_name: astro-logs
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: astro
+            container: astro-blog-astro
+            __path__: /var/lib/docker/containers/*astro-blog-astro*/*.log
+    - job_name: haproxy-logs
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: haproxy
+            container: astro-blog-haproxy
+            __path__: /var/lib/docker/containers/*haproxy*/**/*.log
