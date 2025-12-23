@@ -46,7 +46,7 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 ## TLS certificates
 
 - Genera la CA y el bundle de certificados ejecutando `bash scripts/generate-certs.sh`. Esto crea `certs/ca.crt.pem` y `certs/haproxy.pem`.
-- Apunta `www.aladroc-test.io` y `grafana.aladroc-test.io` a `127.0.0.1` en `/etc/hosts` para que el navegador resuelva los hosts locales.
+- Apunta `aladroc-test.io`, `www.aladroc-test.io` y `grafana.aladroc-test.io` a `127.0.0.1` en `/etc/hosts` para que el navegador resuelva los hosts locales.
 - Confía en `certs/ca.crt.pem` en tu sistema o navegador si quieres evitar warnings durante el desarrollo.
 
 ## Analíticas self-hosted

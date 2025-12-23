@@ -12,7 +12,7 @@ SERVER_PEM="${OUTPUT_DIR}/haproxy.pem"
 EXTFILE="${OUTPUT_DIR}/openssl-san.cnf"
 
 DOMAIN="aladroc-test.io"
-HOSTS=("www.${DOMAIN}" "grafana.${DOMAIN}")
+HOSTS=("aladroc-test.io" "www.${DOMAIN}" "grafana.${DOMAIN}")
 
 mkdir -p "${OUTPUT_DIR}"
 
@@ -22,7 +22,7 @@ openssl req -x509 -new -nodes -key "${CA_KEY}" -sha256 -days 3650 \
   -out "${CA_CERT}" -subj "/CN=Aladroc Test CA/O=Astro Blog" > /dev/null 2>&1
 
 cat <<EOF > "${EXTFILE}"
-subjectAltName=DNS:${HOSTS[0]},DNS:${HOSTS[1]}
+subjectAltName=DNS:${HOSTS[0]},DNS:${HOSTS[1]},DNS:${HOSTS[2]}
 EOF
 
 echo "Creating server key and CSR..."
