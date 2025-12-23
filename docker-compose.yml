@@ -69,7 +69,7 @@ services:
     user: root
 
   agent:
-    image: grafana/agent:2.12.1
+    image: grafana/agent:latest
     depends_on:
       - loki
     command:
