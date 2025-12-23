@@ -1,5 +1,5 @@
 # Astro Tech Blog
-
+- Ejecuta `sudo bash scripts/add-hosts.sh` para asegurar que `aladroc-test.io`, `www.aladroc-test.io` y `grafana.aladroc-test.io` resuelven a la máquina local. El script ignora duplicados.
 Repositorio base para un blog técnico escrito con Astro, con contenedores, observabilidad y analíticas locales.
 
 ## Vapor
