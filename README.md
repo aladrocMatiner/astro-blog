@@ -29,6 +29,7 @@ Servicios principales:
 
 - `astro`: servidor Astro dev (expuesto en HAProxy en el puerto **8080** y también en TLS como `www.aladroc-test.io`).
 - `haproxy`: único punto de acceso (HTTP en 8080 y HTTPS en 443 con `certs/haproxy.pem`; el script `scripts/generate-certs.sh` genera los certificados para `www.aladroc-test.io` y `grafana.aladroc-test.io`).
+- `haproxy-exporter`: reexpone los stats de HAProxy en formato Prometheus para que Prometheus pueda recolectarlos sin parsear HTML; escucha en `:9101` y consulta `http://haproxy:8404/;csv`.
 - `grafana`: dashboard preconfigurado con Prometheus y Loki.
 - `prometheus`: scraping del proxy y otros backends.
 - `loki` + `alloy agent`: Grafana Alloy (agent) colecta logs Docker y los envía a Loki. El contenedor necesita acceso de solo lectura a `/var/lib/docker/containers` para capturar los registros.
@@ -38,9 +39,10 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 
 ## Observabilidad
 
-- Grafana está disponible vía `https://grafana.aladroc-test.io` (HAProxy termina TLS) y sigue siendo accesible en `http://localhost:8080/grafana`.
+- Grafana también se puede abrir en `https://aladroc-test.io/grafana` y `https://www.aladroc-test.io/grafana` gracias a las rutas del proxy; el dashboard se provisiona automáticamente.
 - Prometheus UI: `http://localhost:8080/prometheus`
 - Loki Explore: `http://localhost:8080/loki`
+- HAProxy exporter Prometheus: `http://localhost:9101/metrics` (scraped por el job `haproxy-exporter` para alimentar los paneles de HAProxy).
 - cAdvisor UI: `http://localhost:8080/metrics` (el tablero de Prometheus incluye datos gracias al job `cadvisor`).
 - Grafana incluye un dashboard preconfigurado (`astro-haproxy-overview`) que muestra CPU/memoria de Astro, sesiones/requests de HAProxy y los logs relevantes de ambos servicios.
 - Grafana Alloy agent lee los logs en `/var/lib/docker/containers/*/*.log` y los envía a Loki para alimentar los dashboards.

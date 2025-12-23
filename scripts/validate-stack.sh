@@ -9,6 +9,7 @@ ENDPOINTS=(
   "http://localhost:8080/prometheus"
   "http://localhost:8080/loki/api/v1/labels"
   "http://localhost:8404/metrics"
+  "http://localhost:9101/metrics"
 )
 
 check_endpoint() {
