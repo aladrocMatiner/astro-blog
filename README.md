@@ -51,6 +51,7 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 - Grafana Alloy agent reemplaza a Promtail, lee los logs desde `/var/lib/docker/containers/*/*.log` y los envía a Loki sin configuración adicional.
 - Un microservicio `container-metrics` consulta el socket de Docker y expone los `astro_container_cpu_percent` y `astro_container_memory_*` para que Prometheus pueda monitorizar los servicios por nombre.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
+- Los dashboards comunitarios `Astro Container Overview` y `HAProxy Community Stats` están versionados en `observability/grafana/dashboards/` y usan las métricas expuestas por `container-metrics`, cAdvisor y el HAProxy exporter para brindar vistas completas de Astro y el proxy.
 
 ## TLS certificates
 

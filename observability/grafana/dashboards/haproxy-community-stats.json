@@ -1,0 +1,200 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "description": "Request rate for the selected frontend",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "targets": [
+        {
+          "expr": "rate(haproxy_frontend_http_requests_total{frontend=~\"$frontend\"}[1m])",
+          "legendFormat": "{{frontend}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Frontend request rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Active sessions per frontend",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "haproxy_frontend_current_sessions{frontend=~\"$frontend\"}",
+          "legendFormat": "{{frontend}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Frontend active sessions",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Backend HTTP responses",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "rate(haproxy_backend_http_responses_total{backend=~\"$backend\"}[1m])",
+          "legendFormat": "{{backend}}",
+          "refId": "C"
+        }
+      ],
+      "title": "Backend response rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Errors (4xx/5xx) on the selected backend",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "rate(haproxy_backend_http_responses_total{backend=~\"$backend\",code=~\"[45]..\"}[5m])",
+          "legendFormat": "errors {{backend}}",
+          "refId": "D"
+        }
+      ],
+      "title": "Backend errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Loki",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "targets": [
+        {
+          "expr": "{job=\"haproxy\"}",
+          "limit": 50,
+          "refId": "E"
+        }
+      ],
+      "title": "HAProxy logs",
+      "type": "logs"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "haproxy",
+    "community"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "frontend",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(haproxy_frontend_http_requests_total, frontend)",
+        "refresh": 1,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "label": "Frontend",
+        "hide": 0,
+        "options": [],
+        "skipUrlSync": false
+      },
+      {
+        "name": "backend",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(haproxy_backend_http_requests_total, backend)",
+        "refresh": 1,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "label": "Backend",
+        "hide": 0,
+        "options": [],
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h"
+    ]
+  },
+  "timezone": "browser",
+  "title": "HAProxy Community Stats",
+  "uid": "haproxy-community-stats",
+  "version": 1
+}
