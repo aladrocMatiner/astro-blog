@@ -17,6 +17,7 @@ services:
     image: haproxy:2.9
     ports:
       - '8080:8080'
+      - '443:443'
       - '8404:8404'
     depends_on:
       - astro
@@ -24,8 +25,10 @@ services:
       - prometheus
       - loki
       - analytics
+      - agent
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./certs/haproxy.pem:/certs/haproxy.pem:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 10s
@@ -65,16 +68,16 @@ services:
       - loki-index:/loki/index
     user: root
 
-  promtail:
-    image: grafana/promtail:2.8.1
+  agent:
+    image: grafana/agent:2.12.1
     depends_on:
       - loki
     command:
-      - '-config.file=/etc/promtail/promtail-config.yaml'
+      - '--config.file=/etc/agent/agent-config.yaml'
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./observability/promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
-      - promtail-positions:/tmp
+      - ./observability/agent/agent-config.yaml:/etc/agent/agent-config.yaml:ro
+      - agent-positions:/tmp/agent-positions
 
   analytics:
     build:
@@ -95,4 +98,4 @@ volumes:
   analytics-data:
   loki-storage:
   loki-index:
-  promtail-positions:
+  agent-positions:

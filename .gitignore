@@ -6,3 +6,4 @@ dist
 docker-compose.override.yml
 *.log
 analytics/data/*.json
+certs/

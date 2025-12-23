@@ -26,22 +26,28 @@ docker compose up --build
 
 Servicios principales:
 
-- `astro`: servidor Astro dev (expuesto en HAProxy en el puerto **8080**).
-- `haproxy`: único punto de acceso (cookie para rutas `/grafana`, `/prometheus`, `/loki`, `/analytics`).
+- `astro`: servidor Astro dev (expuesto en HAProxy en el puerto **8080** y también en TLS como `www.aladroc-test.io`).
+- `haproxy`: único punto de acceso (HTTP en 8080 y HTTPS en 443 con `certs/haproxy.pem`; el script `scripts/generate-certs.sh` genera los certificados para `www.aladroc-test.io` y `grafana.aladroc-test.io`).
 - `grafana`: dashboard preconfigurado con Prometheus y Loki.
 - `prometheus`: scraping del proxy y otros backends.
-- `loki` + `promtail`: ingesta de logs Docker. Para que `promtail` lea `/var/lib/docker/containers/*/*.log` en Linux necesitarás dar acceso de solo lectura a esa ruta para el contenedor (el compose actual monta el host directamente).
+- `loki` + `alloy agent`: Grafana Alloy (agent) colecta logs Docker y los envía a Loki. El contenedor necesita acceso de solo lectura a `/var/lib/docker/containers` para capturar los registros.
 - `analytics`: servicio minimalista que recibe pageviews y expone dashboard en `/analytics/dashboard`.
 
 Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>` para diagnosticar.
 
 ## Observabilidad
 
-- Grafana está disponible vía `http://localhost:8080/grafana` (accesible detrás de HAProxy).
+- Grafana está disponible vía `https://grafana.aladroc-test.io` (HAProxy termina TLS) y sigue siendo accesible en `http://localhost:8080/grafana`.
 - Prometheus UI: `http://localhost:8080/prometheus`
 - Loki Explore: `http://localhost:8080/loki`
-- Promtail lee archivos de logs de Docker (`/var/lib/docker/containers/*/*.log`) y los envía a Loki.
+- Grafana Alloy agent lee los logs en `/var/lib/docker/containers/*/*.log` y los envía a Loki para alimentar los dashboards.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
+
+## TLS certificates
+
+- Genera la CA y el bundle de certificados ejecutando `bash scripts/generate-certs.sh`. Esto crea `certs/ca.crt.pem` y `certs/haproxy.pem`.
+- Apunta `www.aladroc-test.io` y `grafana.aladroc-test.io` a `127.0.0.1` en `/etc/hosts` para que el navegador resuelva los hosts locales.
+- Confía en `certs/ca.crt.pem` en tu sistema o navegador si quieres evitar warnings durante el desarrollo.
 
 ## Analíticas self-hosted
 
