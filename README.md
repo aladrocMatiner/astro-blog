@@ -6,8 +6,8 @@ Repositorio base para un blog técnico escrito con Astro, con contenedores, obse
 - **Astro** para el front-end y la gestión de contenido técnico (Markdown + posts de prueba).
 - **HAProxy** como reverse proxy para servir el blog y exponer dashboards/servicios.
 - **Grafana, Prometheus y Loki** para métricas y logs básicos.
-- **Umami (self-hosted)** como analíticas privacy-first.
-- **Docker Compose** para orchestración reproducible y pruebas dentro del contenedor.
+- **Analíticas self-hosted** (tracker sencillo con dashboard propio) para contabilizar visitas.
+- **Docker Compose** para orquestar todo el stack en contenedores reproducibles.
 
 ## Desarrollo local
 
@@ -31,7 +31,7 @@ Servicios principales:
 - `grafana`: dashboard preconfigurado con Prometheus y Loki.
 - `prometheus`: scraping del proxy y otros backends.
 - `loki` + `promtail`: ingesta de logs Docker. Para que `promtail` lea `/var/lib/docker/containers/*/*.log` en Linux necesitarás dar acceso de solo lectura a esa ruta para el contenedor (el compose actual monta el host directamente).
-- `umami` + `postgres`: analíticas locales (busca el script en `/analytics`).
+- `analytics`: servicio minimalista que recibe pageviews y expone dashboard en `/analytics/dashboard`.
 
 Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>` para diagnosticar.
 
@@ -43,11 +43,11 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 - Promtail lee archivos de logs de Docker (`/var/lib/docker/containers/*/*.log`) y los envía a Loki.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
 
-## Analíticas (Umami)
+## Analíticas self-hosted
 
-- El snippet de Umami se carga automáticamente si defines `PUBLIC_UMAMI_SCRIPT_URL` y `PUBLIC_UMAMI_WEBSITE_ID` en tu entorno (variable `.env` para `npm run dev` o `docker compose`).
-- El dashboard expone páginas vistas por ruta y referers.
-- Para resetear datos: `docker compose exec umami npm run db:reset`.
+- El tracker inyecta un `<script>` configurable (`PUBLIC_ANALYTICS_SCRIPT_URL`) y envía los eventos a `PUBLIC_ANALYTICS_ENDPOINT_URL` usando `navigator.sendBeacon`. Por defecto se conecta a `http://localhost:8080`.
+- El dashboard está disponible en `http://localhost:8080/analytics/dashboard` (expuesto tras HAProxy). También puedes acceder directamente al servicio si mapeas el puerto.
+- Para limpiar datos: `docker compose exec analytics rm -f /app/analytics/data/stats.json`.
 
 ## Contenido
 

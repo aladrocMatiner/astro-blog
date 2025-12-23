@@ -1,21 +1,22 @@
 ---
 import Layout from '../../layouts/BaseLayout.astro';
+import { getAllPosts, getPostBySlug } from '../../lib/posts';
 
-const posts = Object.entries(import.meta.glob('../../content/posts/*.md', { eager: true }))
-  .map(([filePath, module]) => {
-    const slug = filePath.replace('../../content/posts/', '').replace('.md', '');
-    return { slug, module };
-  });
+export function getStaticPaths() {
+  return getAllPosts().map((post) => ({
+    params: {
+      slug: post.slug
+    }
+  }));
+}
 
-const current = posts.find((item) => item.slug === Astro.params.slug);
+const post = getPostBySlug(Astro.params.slug);
 
-if (!current) {
+if (!post) {
   throw new Error(`Post not found: ${Astro.params.slug}`);
 }
 
-const { module } = current;
-const Content = module.default;
-const { title, summary, publishDate, tags } = module.frontmatter;
+const { Content, title, summary, publishDate, tags } = post;
 ---
 <Layout title={`${title} · Astro Tech Blog`}>
   <article style="display:flex; flex-direction:column; gap:1rem;">

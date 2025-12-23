@@ -1,6 +1,8 @@
 node_modules
+analytics/node_modules
 .astro
 dist
 .env
 docker-compose.override.yml
 *.log
+analytics/data/*.json
