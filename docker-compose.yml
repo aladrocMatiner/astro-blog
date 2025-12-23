@@ -101,14 +101,15 @@ services:
       - astro
 
   agent:
-    image: grafana/agent:latest
+    image: grafana/alloy:latest
     depends_on:
       - loki
     command:
-      - '--config.file=/etc/agent/agent-config.yaml'
+      - run
+      - /etc/alloy/config.alloy
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./observability/agent/agent-config.yaml:/etc/agent/agent-config.yaml:ro
+      - ./observability/agent/config.alloy:/etc/alloy/config.alloy:ro
       - agent-positions:/tmp/agent-positions
 
   analytics:

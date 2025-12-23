@@ -32,7 +32,7 @@ Servicios principales:
 - `haproxy-exporter`: reexpone los stats de HAProxy en formato Prometheus para que Prometheus pueda recolectarlos sin parsear HTML; escucha en `:9101` y consulta `http://haproxy:8404/;csv`.
 - `grafana`: dashboard preconfigurado con Prometheus y Loki.
 - `prometheus`: scraping del proxy y otros backends.
-- `loki` + `alloy agent`: Grafana Alloy (agent) colecta logs Docker y los envía a Loki. El contenedor necesita acceso de solo lectura a `/var/lib/docker/containers` para capturar los registros.
+- `loki` + `alloy agent`: Grafana Alloy colecta logs Docker y los envía a Loki. El contenedor necesita acceso de solo lectura a `/var/lib/docker/containers` para capturar los registros.
 - `container-metrics`: microservicio Python que consulta `/var/run/docker.sock` y expone los `astro_container_*` que alimentan las métricas de CPU/memoria por servicio.
 - `analytics`: servicio minimalista que recibe pageviews y expone dashboard en `/analytics/dashboard`.
 
@@ -48,7 +48,7 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 - HAProxy exporter Prometheus: `http://localhost:9101/metrics` (scraped por el job `haproxy-exporter` para alimentar los paneles de HAProxy).
 - cAdvisor UI: `http://localhost:8080/metrics` (el tablero de Prometheus incluye datos gracias al job `cadvisor`).
 - Grafana incluye un dashboard preconfigurado (`astro-haproxy-overview`) que muestra CPU/memoria de Astro, sesiones/requests de HAProxy y los logs relevantes de ambos servicios.
-- Grafana Alloy agent reemplaza a Promtail, lee los logs desde `/var/lib/docker/containers/*/*.log` y los envía a Loki sin configuración adicional.
+- Grafana Alloy reemplaza a Promtail, lee los logs desde `/var/lib/docker/containers/*/*-json.log` con `observability/agent/config.alloy` y los envía a Loki.
 - Un microservicio `container-metrics` consulta el socket de Docker y expone los `astro_container_cpu_percent` y `astro_container_memory_*` para que Prometheus pueda monitorizar los servicios por nombre.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
 - Los dashboards comunitarios `Astro Container Overview` y `HAProxy Community Stats` están versionados en `observability/grafana/dashboards/` y usan las métricas expuestas por `container-metrics`, cAdvisor y el HAProxy exporter para brindar vistas completas de Astro y el proxy.

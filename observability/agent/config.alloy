@@ -1,0 +1,20 @@
+local.file_match "docker" {
+	path_targets = [{
+		__address__ = "localhost",
+		__path__    = "/var/lib/docker/containers/*/*-json.log",
+		job         = "docker",
+	}]
+}
+
+loki.source.file "docker" {
+	targets               = local.file_match.docker.targets
+	forward_to            = [loki.write.default.receiver]
+	legacy_positions_file = "/tmp/agent-positions/positions.yaml"
+}
+
+loki.write "default" {
+	endpoint {
+		url = "http://loki:3100/loki/api/v1/push"
+	}
+	external_labels = {}
+}
