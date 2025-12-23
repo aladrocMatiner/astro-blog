@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import { getTags } from '../lib/posts';
+
+const tags = getTags();
+---
+<Layout title="Tags · Astro Tech Blog">
+  <section>
+    <h1>Etiquetas</h1>
+    <p style="color:#cbd5f5; max-width:68ch;">
+      Cada etiqueta agrupa artículos técnicos y experimentos de infraestructura. Usa esta página para
+      navegar rápidamente por el blog segmentado por temas.
+    </p>
+  </section>
+  <section style="display:grid; gap:1rem;">
+    {tags.map((entry) => (
+      <article
+        style="border:1px solid rgba(148,163,184,0.25); border-radius:1rem; padding:1rem; background:rgba(15,23,42,0.6);"
+      >
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="margin:0; font-size:1.25rem;">{entry.tag}</h2>
+          <span class="tag">{entry.posts.length} posts</span>
+        </header>
+        <ul style="margin:0; padding-left:1.25rem;">
+          {entry.posts.map((post) => (
+            <li style="margin-bottom:0.25rem;">
+              <a href={`/blog/${post.slug}`} style="color:#38bdf8; font-weight:600;">
+                {post.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+</Layout>

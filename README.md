@@ -33,19 +33,23 @@ Servicios principales:
 - `grafana`: dashboard preconfigurado con Prometheus y Loki.
 - `prometheus`: scraping del proxy y otros backends.
 - `loki` + `alloy agent`: Grafana Alloy (agent) colecta logs Docker y los envía a Loki. El contenedor necesita acceso de solo lectura a `/var/lib/docker/containers` para capturar los registros.
+- `container-metrics`: microservicio Python que consulta `/var/run/docker.sock` y expone los `astro_container_*` que alimentan las métricas de CPU/memoria por servicio.
 - `analytics`: servicio minimalista que recibe pageviews y expone dashboard en `/analytics/dashboard`.
 
 Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>` para diagnosticar.
 
 ## Observabilidad
 
-- Grafana también se puede abrir en `https://aladroc-test.io/grafana` y `https://www.aladroc-test.io/grafana` gracias a las rutas del proxy; el dashboard se provisiona automáticamente.
+- Grafana está provisionado con Prometheus y Loki y se expone de forma segura en `https://aladroc-test.io/grafana`
+  (también disponible en `https://www.aladroc-test.io/grafana`). El login local por defecto es `admin`/`admin`,
+  así que cambia las credenciales si expones el stack fuera de tu entorno de confianza.
 - Prometheus UI: `http://localhost:8080/prometheus`
 - Loki Explore: `http://localhost:8080/loki`
 - HAProxy exporter Prometheus: `http://localhost:9101/metrics` (scraped por el job `haproxy-exporter` para alimentar los paneles de HAProxy).
 - cAdvisor UI: `http://localhost:8080/metrics` (el tablero de Prometheus incluye datos gracias al job `cadvisor`).
 - Grafana incluye un dashboard preconfigurado (`astro-haproxy-overview`) que muestra CPU/memoria de Astro, sesiones/requests de HAProxy y los logs relevantes de ambos servicios.
-- Grafana Alloy agent lee los logs en `/var/lib/docker/containers/*/*.log` y los envía a Loki para alimentar los dashboards.
+- Grafana Alloy agent reemplaza a Promtail, lee los logs desde `/var/lib/docker/containers/*/*.log` y los envía a Loki sin configuración adicional.
+- Un microservicio `container-metrics` consulta el socket de Docker y expone los `astro_container_cpu_percent` y `astro_container_memory_*` para que Prometheus pueda monitorizar los servicios por nombre.
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
 
 ## TLS certificates
@@ -56,11 +60,14 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 
 ## Analíticas self-hosted
 
-- El tracker inyecta un `<script>` configurable (`PUBLIC_ANALYTICS_SCRIPT_URL`) y envía los eventos a `PUBLIC_ANALYTICS_ENDPOINT_URL` usando `navigator.sendBeacon`. Por defecto se conecta a `http://localhost:8080`.
-- El dashboard está disponible en `http://localhost:8080/analytics/dashboard` (expuesto tras HAProxy). También puedes acceder directamente al servicio si mapeas el puerto.
-- Para limpiar datos: `docker compose exec analytics rm -f /app/analytics/data/stats.json`.
+- La página `https://aladroc-test.io/analytics/dashboard` muestra el panel histórico de visitas, y el tracker (script en `/analytics.js`)
+  envía eventos de navegación a `https://aladroc-test.io/track`. Usa `PUBLIC_ANALYTICS_*` para apuntar al tracker desde otros entornos si hace falta.
+- El tracker opera en modo “privacy-first”: no comparte datos con terceros, no sacrifica cookies de seguimiento ni guarda campos innecesarios, y puedes resetear la colección borrando
+  `analytics/data/stats.json`.
 
 ## Contenido
+
+- La ruta `/tags` muestra todas las etiquetas disponibles y te permite navegar por los posts agrupados por tema.
 
 - Guarda los artículos en `src/content/posts` con frontmatter (`title`, `summary`, `publishDate`, `tags`).
 - Usa Markdown con bloques de código para documentar conceptos y fragmentos de infraestructura.

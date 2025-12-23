@@ -29,10 +29,6 @@ services:
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./certs/haproxy.pem:/certs/haproxy.pem:ro
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 10s
-      retries: 3
 
   haproxy-exporter:
     image: prom/haproxy-exporter:latest
@@ -81,8 +77,9 @@ services:
     ports:
       - '8082:8080'
     command:
-      - '--docker_only'
+      - '--housekeeping_interval=1s'
       - '--store_container_labels=false'
+      - '--whitelisted_container_labels=com.docker.compose.service'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -92,6 +89,16 @@ services:
       - /dev/disk/:/dev/disk:ro
     user: root
     privileged: true
+
+  container-metrics:
+    build:
+      context: ./observability/container-stats
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - '9800:9800'
+    depends_on:
+      - astro
 
   agent:
     image: grafana/agent:latest

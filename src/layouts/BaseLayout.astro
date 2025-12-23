@@ -2,14 +2,18 @@
 const navLinks = [
   { label: 'Inicio', href: '/' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Etiquetas', href: '/tags' },
   { label: 'Estadísticas', href: '/grafana', external: true },
   { label: 'Analíticas', href: '/analytics', external: true }
 ];
 
+const isDev = import.meta.env.MODE === 'development';
 const analyticsScriptUrl =
-  import.meta.env.PUBLIC_ANALYTICS_SCRIPT_URL ?? 'http://localhost:8080/analytics.js';
+  import.meta.env.PUBLIC_ANALYTICS_SCRIPT_URL ??
+  (isDev ? 'http://localhost:4000/analytics.js' : 'https://www.aladroc-test.io/analytics.js');
 const analyticsEndpointUrl =
-  import.meta.env.PUBLIC_ANALYTICS_ENDPOINT_URL ?? 'http://localhost:8080';
+  import.meta.env.PUBLIC_ANALYTICS_ENDPOINT_URL ??
+  (isDev ? 'http://localhost:4000' : 'https://www.aladroc-test.io');
 const includeAnalytics = analyticsScriptUrl && analyticsEndpointUrl;
 ---
 <!doctype html>

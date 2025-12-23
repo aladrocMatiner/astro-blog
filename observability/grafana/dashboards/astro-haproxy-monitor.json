@@ -49,7 +49,7 @@
       "id": 1,
       "targets": [
         {
-          "expr": "100 * rate(container_cpu_usage_seconds_total{container=\"astro-blog-astro\"}[1m])",
+          "expr": "astro_container_cpu_percent{service=\"astro\"}",
           "legendFormat": "{{container}}",
           "refId": "A"
         }
@@ -88,7 +88,7 @@
       "id": 2,
       "targets": [
         {
-          "expr": "container_memory_usage_bytes{container=\"astro-blog-astro\"}",
+          "expr": "astro_container_memory_bytes{service=\"astro\"}",
           "legendFormat": "{{container}}",
           "refId": "B"
         }

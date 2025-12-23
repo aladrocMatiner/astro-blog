@@ -1,0 +1,13 @@
+node_modules
+analytics/node_modules
+analytics/data
+.astro
+dist
+.env
+.env.local*
+docker-compose.override.yml
+npm-debug.log
+npm-debug.*
+certs
+.git
+.gitignore
