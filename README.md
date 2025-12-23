@@ -1,5 +1,6 @@
 # Astro Tech Blog
 - Ejecuta `sudo bash scripts/add-hosts.sh` para asegurar que `aladroc-test.io`, `www.aladroc-test.io` y `grafana.aladroc-test.io` resuelven a la máquina local. El script ignora duplicados.
+- Usa `bash scripts/validate-stack.sh` para verificar (con `curl`) que los endpoints principales están disponibles (`Astro`, `Grafana`, `/api/health`, Prometheus/Loki/cAdvisor). El script falla si alguno responde con error.
 Repositorio base para un blog técnico escrito con Astro, con contenedores, observabilidad y analíticas locales.
 
 ## Vapor
