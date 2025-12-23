@@ -127,7 +127,7 @@
       "id": 3,
       "targets": [
         {
-          "expr": "haproxy_frontend_http_front_sessions_current",
+          "expr": "haproxy_frontend_current_sessions",
           "legendFormat": "{{frontend}}",
           "refId": "C"
         }
@@ -153,7 +153,7 @@
       "id": 4,
       "targets": [
         {
-          "expr": "rate(haproxy_frontend_http_front_http_requests_total[1m])",
+          "expr": "rate(haproxy_frontend_http_requests_total[1m])",
           "legendFormat": "{{frontend}}",
           "refId": "D"
         }

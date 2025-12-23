@@ -41,7 +41,7 @@ services:
     ports:
       - '9101:9101'
     command:
-      - '--haproxy.scrape-uri=http://admin:observability@haproxy:8404/;csv'
+      - '--haproxy.scrape-uri=http://admin:observability@haproxy:8404/metrics;csv'
 
   prometheus:
     image: prom/prometheus:latest
