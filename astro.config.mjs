@@ -6,5 +6,11 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: 'prism'
   },
-  integrations: [mdx()]
+  integrations: [mdx()],
+  vite: {
+    server: {
+      host: true,
+      allowedHosts: ['aladroc-test.io', 'www.aladroc-test.io', 'grafana.aladroc-test.io']
+    }
+  }
 });
