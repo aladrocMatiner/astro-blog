@@ -1,0 +1,24 @@
+---
+const { post } = Astro.props;
+---
+<article
+  style="border:1px solid rgba(148,163,184,0.25); padding:1.25rem; border-radius:1rem; background:rgba(15,23,42,0.75); box-shadow:0 10px 25px rgba(2,6,23,0.4);"
+>
+  <header style="display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+    <div>
+      <p style="margin:0; font-size:0.75rem; color:#94a3b8;">
+        {new Date(post.publishDate).toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })}
+      </p>
+      <h3 style="margin:0; font-size:1.5rem;">{post.title}</h3>
+    </div>
+    <span class="tag">{post.tags.join(' · ')}</span>
+  </header>
+  <p style="color:#cbd5f5;">{post.summary}</p>
+  <a href={`/blog/${post.slug}`} style="font-weight:600; color:#38bdf8;">
+    Leer artículo →
+  </a>
+</article>

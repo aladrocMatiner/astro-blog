@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = Object.entries(import.meta.glob('../content/posts/*.md', { eager: true }))
+  .map(([filePath, module]) => {
+    const slug = filePath.replace('../content/posts/', '').replace('.md', '');
+    return { slug, ...module.frontmatter };
+  })
+  .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+---
+<Layout title="Blog · Astro Tech Blog">
+  <section>
+    <h1>Blog · Proyectos técnicos</h1>
+    <p style="color:#cbd5f5;">
+      Colección de artículos orientados a infra, observabilidad y desarrollo de sistemas técnicos.
+    </p>
+  </section>
+  <section style="display:grid; gap:1rem;">
+    {posts.map((post) => (
+      <PostCard post={post} />
+    ))}
+  </section>
+</Layout>

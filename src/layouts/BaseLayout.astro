@@ -1,0 +1,109 @@
+---
+const navLinks = [
+  { label: 'Inicio', href: '/' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Estadísticas', href: '/grafana', external: true },
+  { label: 'Analíticas', href: '/analytics', external: true }
+];
+
+const analyticsScriptUrl =
+  Astro.env.PUBLIC_UMAMI_SCRIPT_URL ?? 'http://localhost:3001/umami.js';
+const analyticsWebsiteId =
+  Astro.env.PUBLIC_UMAMI_WEBSITE_ID ?? '00000000-0000-0000-0000-000000000000';
+const includeAnalytics =
+  analyticsScriptUrl && analyticsWebsiteId && analyticsWebsiteId !== '00000000-0000-0000-0000-000000000000';
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{Astro.props.title ?? 'Astro Tech Blog'}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        background: #0b1020;
+        color: #f8fafc;
+        min-height: 100vh;
+      }
+      a {
+        color: inherit;
+      }
+      header {
+        padding: 1.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(11, 16, 32, 0.9);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        backdrop-filter: blur(10px);
+      }
+      nav {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.95rem;
+      }
+      main {
+        padding: 2rem 1rem 4rem;
+        max-width: 960px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      footer {
+        padding: 2rem 1rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #94a3b8;
+      }
+      .tag {
+        display: inline-flex;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.15);
+      }
+    </style>
+    {includeAnalytics && (
+      <script async defer data-website-id={analyticsWebsiteId} src={analyticsScriptUrl}></script>
+    )}
+  </head>
+  <body>
+    <header>
+      <div>
+        <p style="margin:0; font-weight:600;">Astro Tech Blog</p>
+        <p style="margin:0; font-size:0.8rem; color:#94a3b8;">
+          Documentando proyectos y operaciones técnicas
+        </p>
+      </div>
+      <nav>
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? '_blank' : '_self'}
+            rel={link.external ? 'noreferrer' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+    </header>
+    <main>{Astro.slots.default()}</main>
+    <footer>
+      <p>Stack: Astro · Docker · Grafana · Prometheus · Loki · Umami</p>
+      <p>Hecho para documentar proyectos IT con métricas y observabilidad.</p>
+    </footer>
+  </body>
+</html>

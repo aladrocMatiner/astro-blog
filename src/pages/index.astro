@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const postEntries = Object.entries(import.meta.glob('../content/posts/*.md', { eager: true }));
+const posts = postEntries
+  .map(([filePath, module]) => {
+    const slug = filePath.replace('../content/posts/', '').replace('.md', '');
+    return { slug, ...module.frontmatter };
+  })
+  .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+
+const featured = posts.slice(0, 2);
+---
+<Layout title="Inicio · Astro Tech Blog">
+  <section>
+    <p style="font-size:0.85rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.2em;">
+      Documentación · DevOps · Monitoreo
+    </p>
+    <h1 style="font-size:clamp(2.5rem, 4vw, 3.75rem); margin-top:0.25rem;">
+      Blog técnico para equipos que construyen infra y código, con observabilidad incorporada
+    </h1>
+    <p style="font-size:1.1rem; color:#cbd5f5; max-width:720px;">
+      Aquí se documentan proyectos IT reales, se despliegan métricas, y se verifican
+      dependencias con tests reproducibles dentro de contenedores (Astro + Grafana Labs stack).
+    </p>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom:1rem;">Últimos artículos</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem;">
+      {featured.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </div>
+    <p style="margin-top:1rem;">
+      <a href="/blog" style="color:#38bdf8; font-weight:600;">Ver todo el blog</a>
+    </p>
+  </section>
+</Layout>
