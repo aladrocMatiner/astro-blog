@@ -53,6 +53,12 @@ Consulta `docker compose ps` para ver puertos y `docker compose logs <servicio>`
 - Los dashboards y datasources de Grafana están versionados en `observability/grafana/provisioning/`.
 - Los dashboards comunitarios `Astro Container Overview` y `HAProxy Community Stats` están versionados en `observability/grafana/dashboards/` y usan las métricas expuestas por `container-metrics`, cAdvisor y el HAProxy exporter para brindar vistas completas de Astro y el proxy.
 
+## Drafts (modo admin)
+
+- Los borradores viven en `src/content/drafts/` y no se publican en el blog.
+- Para verlos, define `ADMIN_TOKEN` (por ejemplo en `docker-compose.yml`) y entra a `/admin` para activar el modo administrador.
+- Los borradores se listan en `/drafts` y tienen sus páginas individuales bajo `/drafts/<slug>`.
+
 ## TLS certificates
 
 - Genera la CA y el bundle de certificados ejecutando `bash scripts/generate-certs.sh`. Esto crea `certs/ca.crt.pem` y `certs/haproxy.pem`.

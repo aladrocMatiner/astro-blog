@@ -1,5 +1,5 @@
 ---
-const { post } = Astro.props;
+const { post, basePath = '/blog' } = Astro.props;
 ---
 <article
   style="border:1px solid rgba(148,163,184,0.25); padding:1.25rem; border-radius:1rem; background:rgba(15,23,42,0.75); box-shadow:0 10px 25px rgba(2,6,23,0.4);"
@@ -18,7 +18,7 @@ const { post } = Astro.props;
     <span class="tag">{post.tags.join(' · ')}</span>
   </header>
   <p style="color:#cbd5f5;">{post.summary}</p>
-  <a href={`/blog/${post.slug}`} style="font-weight:600; color:#38bdf8;">
+  <a href={`${basePath}/${post.slug}`} style="font-weight:600; color:#38bdf8;">
     Leer artículo →
   </a>
 </article>

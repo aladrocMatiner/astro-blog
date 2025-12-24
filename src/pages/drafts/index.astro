@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getAllDrafts } from '../../lib/posts';
+
+const drafts = getAllDrafts();
+---
+<Layout title="Borradores · Astro Tech Blog">
+  <section>
+    <h1>Borradores</h1>
+    <p style="color:#cbd5f5;">
+      Artículos en edición. Solo visibles en modo administrador.
+    </p>
+  </section>
+  <section style="display:grid; gap:1rem;">
+    {drafts.map((draft) => (
+      <PostCard post={draft} basePath="/drafts" />
+    ))}
+  </section>
+</Layout>

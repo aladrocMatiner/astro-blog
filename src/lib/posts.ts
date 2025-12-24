@@ -10,25 +10,36 @@ type PostModule = {
   default: any;
 };
 
-type Post = PostFrontmatter & {
+type PostContent = PostFrontmatter & {
   slug: string;
   Content: any;
 };
 
-const postModules = Object.entries(
-  import.meta.glob('../content/posts/*.md', { eager: true })
-) as [string, PostModule][];
+type Post = PostContent;
+type Draft = PostContent;
 
-const posts = postModules
-  .map(([filePath, module]) => {
-    const slug = filePath.replace('../content/posts/', '').replace('.md', '');
-    return {
-      slug,
-      Content: module.default,
-      ...module.frontmatter
-    };
-  })
-  .sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
+function loadPosts(glob: Record<string, PostModule>, basePath: string): PostContent[] {
+  return Object.entries(glob)
+    .map(([filePath, module]) => {
+      const slug = filePath.replace(basePath, '').replace('.md', '');
+      return {
+        slug,
+        Content: module.default,
+        ...module.frontmatter
+      };
+    })
+    .sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
+}
+
+const posts = loadPosts(
+  import.meta.glob('../content/posts/*.md', { eager: true }) as Record<string, PostModule>,
+  '../content/posts/'
+);
+
+const drafts = loadPosts(
+  import.meta.glob('../content/drafts/*.md', { eager: true }) as Record<string, PostModule>,
+  '../content/drafts/'
+);
 
 export function getAllPosts(): Post[] {
   return posts;
@@ -36,6 +47,14 @@ export function getAllPosts(): Post[] {
 
 export function getPostBySlug(slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
+}
+
+export function getAllDrafts(): Draft[] {
+  return drafts;
+}
+
+export function getDraftBySlug(slug: string): Draft | undefined {
+  return drafts.find((draft) => draft.slug === slug);
 }
 
 type TagSummary = {
