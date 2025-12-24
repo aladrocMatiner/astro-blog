@@ -1,15 +1,36 @@
-local.file_match "docker" {
-	path_targets = [{
-		__address__ = "localhost",
-		__path__    = "/var/lib/docker/containers/*/*-json.log",
-		job         = "docker",
-	}]
+discovery.docker "containers" {
+	host = "unix:///var/run/docker.sock"
 }
 
-loki.source.file "docker" {
-	targets               = local.file_match.docker.targets
-	forward_to            = [loki.write.default.receiver]
-	legacy_positions_file = "/tmp/agent-positions/positions.yaml"
+discovery.relabel "docker_labels" {
+	targets = discovery.docker.containers.targets
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		replacement   = "$1"
+		target_label  = "container_name"
+	}
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_docker_container_id"]
+		target_label  = "container_id"
+	}
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_docker_container_image"]
+		target_label  = "image"
+	}
+}
+
+loki.source.docker "containers" {
+	host        = "unix:///var/run/docker.sock"
+	targets     = discovery.relabel.docker_labels.output
+	forward_to  = [loki.write.default.receiver]
+	labels      = {job = "docker"}
 }
 
 loki.write "default" {

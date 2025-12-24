@@ -109,6 +109,7 @@ services:
       - /etc/alloy/config.alloy
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./observability/agent/config.alloy:/etc/alloy/config.alloy:ro
       - agent-positions:/tmp/agent-positions
 
